@@ -1,0 +1,30 @@
+﻿@model List<MVCSEARCHFUNC.Models.Record>
+
+<table class="table">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <!-- Other headers -->
+    </tr>
+    @foreach (var record in Model)
+    {
+        <tr>
+            <td>@record.Id</td>
+            <td>@record.Name</td>
+            <!-- Other columns -->
+        </tr>
+    }
+</table>
+
+
+@if (Model.Count > 0)
+    {
+        <button id="print-button" class="btn btn-success">Print</button>
+        <script>
+            document.getElementById('print-button').disabled = false;
+        </script>
+    }
+    else
+    {
+        <button id="print-button" class="btn btn-success" disabled>Print</button>
+    }

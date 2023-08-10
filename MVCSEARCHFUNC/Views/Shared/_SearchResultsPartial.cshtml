@@ -1,0 +1,40 @@
+﻿
+
+@model List<MVCSEARCHFUNC.Models.Record>
+
+@if (Model != null && Model.Count > 0)
+{
+    <p>Total Records Found: @Model.Count</p>
+
+    <table id="dataTable" class="table table-striped table-bordered" style="width:100%">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <!-- Other headers -->
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Name</td>
+                    <!-- Other columns -->
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <script>
+        document.getElementById('printbutton').disabled = false;
+    </script>
+
+    <button id="printButton" onclick="window.print()">Print</button>
+}
+else
+{
+    <p>No records found.</p>
+    <button id="printButton" class="btn btn-success" disabled>Print</button>
+
+}

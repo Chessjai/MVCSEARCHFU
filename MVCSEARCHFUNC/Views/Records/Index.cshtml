@@ -1,0 +1,27 @@
+﻿@model IEnumerable<MVCSEARCHFUNC.Models.Record>
+
+
+<h2>Search Results</h2>
+
+<div>
+    <label for="searchTerm">Search Term:</label>
+    <input type="text" id="searchTerm" />
+    <button id="searchButton">Search</button>
+</div>
+
+<div id="searchResults">
+    @Html.Partial("_SearchResultsPartial", Model)
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#searchButton').click(function () {
+            var searchTerm = $('#searchTerm').val();
+            $.get('@Url.Action("Search", "Records")', { searchTerm: searchTerm }, function (data) {
+                $('#searchResults').html(data);
+            });
+        });
+    });
+</script>
+

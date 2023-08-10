@@ -1,0 +1,61 @@
+﻿@model MVCSEARCHFUNC.Models.DDL.Country
+
+@{
+    ViewBag.Title = "Cascading Dropdown Example";
+}
+
+<h2>Cascading Dropdown Example</h2>
+
+@using (Html.BeginForm())
+{
+    <div>
+        @Html.Label("Country:")
+        @Html.DropDownList("CountryId", ViewBag.Countries as SelectList, "Select a Country", new { @class = "form-control" })
+    </div>
+    <div>
+        @Html.Label("State:")
+        @Html.DropDownList("StateId", new SelectList("", "Value", "Text"), "Select a State", new { @class = "form-control" })
+    </div>
+    <div>
+        @Html.Label("City:")
+        @Html.DropDownList("CityId", new SelectList("", "Value", "Text"), "Select a City", new { @class = "form-control" })
+    </div>
+}
+
+@section scripts {
+    <script>
+        $(function () {
+            $('#CountryId').change(function () {
+                var countryId = $(this).val();
+                if (countryId) {
+                    $.getJSON('@Url.Action("GetStatesByCountry", "CascadingDropdown")', { countryId: countryId }, function (data) {
+                        var items = '<option value="">Select a State</option>';
+                        $.each(data, function (i, state) {
+                            items += '<option value="' + state.Id + '">' + state.Name + '</option>';
+                        });
+                        $('#StateId').html(items);
+                        $('#CityId').html('<option value="">Select a City</option>');
+                    });
+                } else {
+                    $('#StateId').html('<option value="">Select a State</option>');
+                    $('#CityId').html('<option value="">Select a City</option>');
+                }
+            });
+
+            $('#StateId').change(function () {
+                var stateId = $(this).val();
+                if (stateId) {
+                    $.getJSON('@Url.Action("GetCitiesByState", "CascadingDropdown")', { stateId: stateId }, function (data) {
+                        var items = '<option value="">Select a City</option>';
+                        $.each(data, function (i, city) {
+                            items += '<option value="' + city.Id + '">' + city.Name + '</option>';
+                        });
+                        $('#CityId').html(items);
+                    });
+                } else {
+                    $('#CityId').html('<option value="">Select a City</option>');
+                }
+            });
+        });
+    </script>
+}

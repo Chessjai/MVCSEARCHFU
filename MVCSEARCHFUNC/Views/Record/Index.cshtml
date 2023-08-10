@@ -1,0 +1,406 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- Include DataTables CSS -->
+    <link href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
+
+    <style>
+        .styled-table th {
+            background-color: #f2f2f2;
+            color: #333;
+            font-weight: bold;
+            padding: 8px;
+        }
+    </style>
+
+
+    <style type="text/css">
+        /* Style for the DataTable */
+        #tblCustomers {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        /* Style for the search input and buttons */
+        #searchField, #searchValue, #startDate, #endDate, #country, #btnSearch, #btnPrint {
+            margin: 5px;
+        }
+
+        /* Adjust button spacing */
+        #btnSearch, #btnPrint {
+            margin-top: 15px;
+        }
+
+        /* Add margin to table for better spacing */
+        #tblCustomers {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <label for="searchField">Search Field:</label>
+        <select id="searchField">
+            <option value="Id">Id</option>
+            <option value="Name">Name</option>
+            <option value="Country">Country</option>
+        </select>
+
+        <input type="text" id="searchValue" placeholder="Search Value" style="background-color: aqua;" />
+        <input type="hidden" id="hiddenIdSearch" />
+        <label for="startId">Start ID:</label>
+        <input type="number" id="startId" />
+        <label for="endId">End ID:</label>
+        <input type="number" id="endId" />
+        <label for="startDate">Start Date:</label>
+        <input type="date" id="startDate" />
+        
+        <label for="endDate">End Date:</label>
+        <input type="date" id="endDate" />
+
+
+
+        <button id="btnSearch" class="btn btn-primary">Search</button>
+        <button id="btnPrint" class="btn btn-success" disabled>Print</button>
+
+        <div class="row mt-3">
+            <div class="col">
+                <table id="tblCustomers" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="background-color: #335c6d; color: white; font-weight: bold; padding: 8px;">Id</th>
+                            <th style="background-color: #335c6d; color: white; font-weight: bold; padding: 8px; ">Name</th>
+                            <th style="background-color: #335c6d; color: white; font-weight: bold; padding: 8px; ">Country</th>
+                            <th style="background-color: #335c6d; color: white; font-weight: bold; padding: 8px; ">Start Date</th>
+                            <th style="background-color: #335c6d; color: white; font-weight: bold; padding: 8px; ">End Date</th>
+                            <th style="background-color: #335c6d; color: white; font-weight: bold; padding: 8px; ">Edit</th>
+                            <th style="background-color: #335c6d; color: white; font-weight: bold; padding: 8px; ">Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editModalLabel">Edit Record</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="editRecordForm">
+                                    <input type="hidden" id="editId" name="Id" />
+                                    <div class="form-group">
+                                        <label for="editName">Name:</label>
+                                        <input type="text" class="form-control" id="editName" name="Name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="editCountry">Country:</label>
+                                        <input type="text" class="form-control" id="editCountry" name="Country" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="editStartDate">Start Date:</label>
+                                        <input type="date" class="form-control" id="editStartDate" name="StartDate" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="editEndDate">End Date:</label>
+                                        <input type="date" class="form-control" id="editEndDate" name="EndDate" required>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" id="btnSaveEdit">Save Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- New record form -->
+        <div class="row mt-3">
+            <div class="col">
+                <h3>Add New Record</h3>
+                <form id="newRecordForm">
+                    <div class="form-group">
+                        <label for="newName">Name:</label>
+                        <input type="text" class="form-control" id="newName" name="Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newCountry">Country:</label>
+                        <input type="text" class="form-control" id="newCountry" name="Country" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newStartDate">Start Date:</label>
+                        <input type="date" class="form-control" id="newStartDate" name="StartDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newEndDate">End Date:</label>
+                        <input type="date" class="form-control" id="newEndDate" name="EndDate" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="btnInsert">Insert Record</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Include jQuery and DataTables JS libraries -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+    <!-- Include Bootstrap JS (make sure it comes after jQuery) -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/plug-ins/1.10.20/i18n/English.json"></script>
+
+    <script type="text/javascript">
+        var oTable;
+
+        $(function () {
+            // Initialize DataTable with empty data initially
+            oTable = $("#tblCustomers").DataTable({
+                bLengthChange: true,
+                lengthMenu: [[5, 10, -1], [5, 10, "All"]],
+                bFilter: true,
+                bSort: true,
+                bPaginate: true,
+                data: [],
+                columns: [
+                    { 'data': 'Id', 'searchable': true },
+                    { 'data': 'Name' },
+                    { 'data': 'Country' },
+                    {
+                        'data': 'StartDate',
+                        'render': function (data) {
+                            return formatDate(data);
+                        }
+                    },
+                    {
+                        'data': 'EndDate',
+                        'render': function (data) {
+                            return formatDate(data);
+                        }
+                    },
+                    {
+                        'data': 'Id',
+                        'render': function (data) {
+                            return '<button class="btn btn-warning btnEdit" data-id="' + data + '">Edit</button>';
+                        }
+                    },
+                    {
+                        'data': 'Id',
+                        'render': function (data) {
+                            return '<button class="btn btn-danger btnDelete" data-id="' + data + '">Delete</button>';
+                        }
+                    }
+                ]
+            });
+
+            // Fetch records and populate DataTable
+            fetchAndPopulateTable();
+
+            // Search button click event
+            $('#btnSearch').click(function () {
+                var searchField = $('#searchField').val();
+                var searchValue = $('#searchValue').val();
+                var startDate = $('#startDate').val();
+                var endDate = $('#endDate').val();
+                var country = $('#country').val();
+                var startId = $('#startId').val(); // Get start ID value
+                var endId = $('#endId').val(); // Get end ID value
+
+                oTable.column(searchField + ':name').search(searchValue).draw();
+                updatePrintButton();
+
+                fetchAndPopulateTable(startDate, endDate, country, startId, endId); // Pass startId and endId
+            });
+
+            // Clear search input and trigger search when Enter key is pressed
+            $('#searchValue').on('keyup', function (e) {
+                if (e.key === 'Enter') {
+                    $('#btnSearch').click();
+                }
+            });
+        });
+        $('#btnSaveEdit').click(function () {
+            var formData = $('#editRecordForm').serialize();
+
+            $.ajax({
+                type: "POST",
+                url: "/Record/EditRecord",
+                data: formData,
+                dataType: "json",
+                success: function (response) {
+                    if (response.success) {
+                        alert(response.message);
+                        // Refresh DataTable
+                        fetchAndPopulateTable();
+                        $('#editModal').modal('hide');
+                    } else {
+                        alert(response.message + '\n' + response.errors.join('\n'));
+                    }
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        });
+
+        // Edit record button click event
+        $('#tblCustomers tbody').on('click', '.btnEdit', function () {
+            var id = $(this).data('id');
+            var record = getRecordById(id);
+            if (record) {
+                populateEditForm(record);
+                $('#editModal').modal('show'); // Show the modal
+            }
+        });
+        function getRecordById(id) {
+            var records = oTable.rows().data();
+            for (var i = 0; i < records.length; i++) {
+                if (records[i].Id === id) {
+                    return records[i];
+                }
+            }
+            return null;
+        }
+        function populateEditForm(record) {
+            $('#editId').val(record.Id);
+            $('#editName').val(record.Name);
+            $('#editCountry').val(record.Country);
+            $('#editStartDate').val(formatDate(record.StartDate));
+            $('#editEndDate').val(formatDate(record.EndDate));
+        }
+        function deleteRecord(id) {
+            $.ajax({
+                type: "POST",
+                url: "/Record/DeleteRecord",
+                data: { id: id },
+                dataType: "json",
+                success: function (response) {
+                    if (response.success) {
+                        alert(response.message);
+                        // Refresh DataTable
+                        fetchAndPopulateTable();
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+
+        $('#tblCustomers tbody').on('click', '.btnDelete', function () {
+            var data = oTable.row($(this).closest('tr')).data();
+            if (confirm('Are you sure you want to delete record with Id ' + data.Id + '?')) {
+                deleteRecord(data.Id);
+            }
+        });
+        // New record form submission
+        $('#newRecordForm').submit(function (event) {
+            event.preventDefault();
+            var formData = $(this).serialize();
+
+            $.ajax({
+                type: "POST",
+                url: "/Record/InsertRecord",
+                data: formData,
+                dataType: "json",
+                success: function (response) {
+                    if (response.success) {
+                        alert(response.message);
+                        // Refresh DataTable and reset form
+                        fetchAndPopulateTable();
+                        $('#newRecordForm')[0].reset();
+                    } else {
+                        alert(response.message + '\n' + response.errors.join('\n'));
+                    }
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        });
+
+        function fetchAndPopulateTable(startDate, endDate, country, startId, endId) {
+            $.ajax({
+                type: "POST",
+                url: "/Record/AjaxMethod",
+                data: {
+                    searchValue: $('#searchValue').val(),
+                    startDate: startDate,
+                    endDate: endDate,
+                    country: country,
+                    searchField: $('#searchField').val(),
+                    startId: startId, // Pass startId
+                    endId: endId // Pass endId
+                },
+                dataType: "json",
+                success: function (response) {
+                    oTable.clear().rows.add(response).draw();
+                    updatePrintButton();
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+
+        function updatePrintButton() {
+            var hasMatchingRecords = oTable.rows({ search: 'applied' }).any();
+            var startDate = $('#startDate').val();
+            var endDate = $('#endDate').val();
+            var country = $('#country').val();
+            var searchValue = $('#searchValue').val();
+            var startId = $('#startId').val();
+            var endId = $('#endId').val();
+
+            var validDateRange = startDate !== '' && endDate !== '';
+            var validCountrySearch = country !== '';
+            var validSearchValue = searchValue !== '';
+
+            // Enable print button if there are matching records or if valid ID range is specified
+            $('#btnPrint').prop('disabled', !(hasMatchingRecords && (validDateRange || validCountrySearch || validSearchValue || (startId !== '' && endId !== ''))));
+        }
+
+        function formatDate(dateString) {
+            var date = new Date(parseInt(dateString.substr(6)));
+            return date.toISOString().substr(0, 10); // Format as 'yyyy-MM-dd'
+        }
+    </script>
+</body>
+</html>
